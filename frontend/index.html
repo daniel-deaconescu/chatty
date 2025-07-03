@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatty</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="chat-container">
+      <!-- Main chat area (left) -->
+      <div class="chat-area">
+        <div class="conversation-container" id="conversation-container">
+          <!-- Dynamic conversation tabs will be added here -->
+          <div class="chat-area-initial-message">
+            <div>💬</div>
+            <h2>Welcome to Chat App</h2>
+            <p>Select a contact from the right panel to start chatting</p>
+          </div>
+        </div>
+
+        <div class="message-input-container">
+          <!-- <input
+            type="text"
+            id="message-input"
+            placeholder="Type a message..."
+          /> -->
+          <!-- <button id="send-button"><i class="fas fa-paper-plane"></i></button> -->
+        </div>
+      </div>
+
+      <!-- Users sidebar (right) -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <h2>Contacts</h2>
+          <div class="online-count-header">
+            <span id="total-online-count">0</span> online
+          </div>
+        </div>
+
+        <div class="users-list" id="users-list">
+          <!-- Pinned Users Section -->
+          <div class="users-section" id="pinned-section">
+            <div class="section-header">
+              <span>PINNED</span>
+              <span class="count-badge" id="pinned-count">0</span>
+            </div>
+            <div class="section-content" id="pinned-users"></div>
+          </div>
+
+          <!-- Online Users Section -->
+          <div class="users-section" id="online-section">
+            <div class="section-header">
+              <span>ONLINE</span>
+              <span class="count-badge" id="online-count">0</span>
+            </div>
+            <div class="section-content" id="online-users"></div>
+          </div>
+
+          <!-- Offline Users Section -->
+          <div class="users-section" id="offline-section">
+            <div class="section-header">
+              <span>OFFLINE</span>
+              <span class="count-badge" id="offline-count">0</span>
+            </div>
+            <div class="section-content" id="offline-users"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
