@@ -31,14 +31,10 @@ A real-time chat application with multiple conversation windows, user status tra
    /Applications/XAMPP/htdocs/chatty (Mac)
    /opt/lampp/htdocs/chatty (Linux)
 
-text
-
 ### 3. Database Setup
 
 The application includes a pre-configured SQLite database file:
 /chatty/database/chatty.db
-
-text
 
 No additional setup is required as the database is already included in the project.
 
@@ -48,7 +44,7 @@ No additional setup is required as the database is already included in the proje
 2. Open your web browser and navigate to:
    http://localhost/chatty/frontend/
 
-text 3. The application should load with sample data
+3. The application should load with sample data
 
 ## Project Structure
 
