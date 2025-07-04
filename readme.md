@@ -52,18 +52,20 @@ text 3. The application should load with sample data
 
 ## Project Structure
 
+<pre>
 chatty/
 ├── backend/
-│ ├── conversations.php # Conversation endpoints
-│ ├── db.php # Database connection
-│ ├── send_messages.php # Message handling
-│ ├── toggle_pin.php # Pin management
-│ └── users.php # User endpoints
+│   ├── conversations.php
+│   ├── db.php
+│   ├── send_messages.php
+│   ├── toggle_pin.php
+│   └── users.php
 ├── database/
-│ └── chatty.db # SQLite database file
+│   └── chatty.db
 └── frontend/
-├── css/
-│ └── style.css # Stylesheet
-├── js/
-│ └── app.js # Main application logic
-└── index.html # Entry point
+    ├── css/
+    │   └── style.css
+    ├── js/
+    │   └── app.js
+    └── index.html
+</pre>
