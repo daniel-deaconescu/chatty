@@ -92,31 +92,47 @@ function renderUserItem(user, containerId, isPinned) {
   userItem.className = `user-item ${isPinned ? "pinned" : ""}`;
   userItem.dataset.userId = user.id;
 
+  // Get first initial for fallback
+  const initial = user.name.charAt(0).toUpperCase();
+  // Define imageUrl with cache-busting
+  const imageUrl = `${user.profile_picture}?ts=${Date.now()}`;
+
   userItem.innerHTML = `
-        <div class="user-avatar ${user.status === "online" ? "online" : ""}">
-            ${user.name.charAt(0).toUpperCase()}
-        </div>
-        <div class="user-info">
-            <div class="user-name">${user.name}</div>
-            <div class="user-preview">${
-              user.last_message || "No messages yet"
-            }</div>
-            <div class="user-time">${formatTime(user.last_seen)}</div>
-        </div>
-        <div class="user-actions">
-            <button class="btn-icon toggle-pin ${
-              isPinned ? "pinned" : ""
-            }" data-user-id="${user.id}">
-                <i class="fas fa-thumbtack"></i>
-            </button>
-            <button class="btn-icon">
-                <i class="fas fa-info-circle"></i>
-            </button>
-            <button class="btn-icon">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
-        </div>
-    `;
+    <div class="avatar-container">
+      <img class="avatar-img" 
+           src="${imageUrl}" 
+           alt="${user.name}"
+           loading="lazy"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="avatar-fallback" style="display:none">${initial}</div>
+      ${user.status === "online" ? '<div class="avatar-online-dot"></div>' : ""}
+    </div>
+    <div class="user-info">
+      <div class="user-name">${user.name}</div>
+      <div class="user-preview">${user.last_message || "No messages yet"}</div>
+      <div class="user-time">${formatTime(user.last_seen)}</div>
+    </div>
+    <div class="user-actions">
+      <button class="btn-icon toggle-pin ${
+        isPinned ? "pinned" : ""
+      }" data-user-id="${user.id}">
+        <i class="fas fa-thumbtack"></i>
+      </button>
+      <button class="btn-icon">
+        <i class="fas fa-info-circle"></i>
+      </button>
+      <button class="btn-icon">
+        <i class="fas fa-ellipsis-v"></i>
+      </button>
+    </div>
+  `;
+
+  // Add error handler
+  const avatarImg = userItem.querySelector(".avatar-img");
+  avatarImg.onerror = function () {
+    this.style.display = "none";
+    this.nextElementSibling.style.display = "flex";
+  };
 
   userItem.addEventListener("click", () => {
     openConversationTab(user);
@@ -234,19 +250,18 @@ function getUserById(userId) {
 // Update the conversation tabs layout
 function updateConversationTabs() {
   conversationContainer.innerHTML = "";
-  console.log(openConversations.length);
+
   if (openConversations.length === 0) {
     conversationContainer.innerHTML = `
-          <div class="chat-area-initial-message">
-            <div>💬</div>
-            <h2>Welcome to Chat App</h2>
-            <p>Select a contact from the right panel to start chatting</p>
-          </div>
-        `;
+      <div class="chat-area-initial-message">
+        <div>💬</div>
+        <h2>Welcome to Chat App</h2>
+        <p>Select a contact from the right panel to start chatting</p>
+      </div>
+    `;
     return;
   }
 
-  // Determine width class based on number of open conversations
   const widthClass =
     openConversations.length === 1
       ? "single-tab"
@@ -254,73 +269,66 @@ function updateConversationTabs() {
       ? "double-tab"
       : "triple-tab";
 
-  // Create a tab for each open conversation
   openConversations.forEach((conv) => {
     const user = getUserById(conv.userId);
     const isOnline = user?.status === "online";
+    const initial = user?.name.charAt(0).toUpperCase() || "U";
+    const imageUrl = `${conv.profilePicture}?ts=${Date.now()}`;
 
     const tab = document.createElement("div");
     tab.className = `conversation-tab ${widthClass}`;
     tab.dataset.userId = conv.userId;
 
-    // Create avatar style - either profile picture or initials
-    const avatarStyle = conv.profilePicture
-      ? `background-image: url('${conv.profilePicture}');`
-      : `background-color: var(--primary-color);`;
-
-    const avatarContent = conv.profilePicture
-      ? ""
-      : conv.userName.charAt(0).toUpperCase();
-
     tab.innerHTML = `
-            <div class="conversation-tab-header">
-                <div class="header-left">
-                    <div class="header-profile">
-                        <div class="header-avatar ${
-                          isOnline ? "online" : ""
-                        }" style="${avatarStyle}">
-                            ${avatarContent}
-                        </div>
-                    </div>
-                    <div class="header-user-info">
-                        <div class="header-user-name">${conv.userName}</div>
-                        <div class="header-user-status ${
-                          isOnline ? "online" : ""
-                        }">
-                            ${
-                              isOnline
-                                ? "Online"
-                                : `Last seen ${formatTime(conv.lastSeen)}`
-                            }
-                        </div>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <button class="header-btn meet-btn" data-user-id="${
-                      conv.userId
-                    }">
-                        <i class="fas fa-phone"></i>
-                        <span>Google Meet</span>
-                    </button>
-                    <button class="close-tab" data-user-id="${conv.userId}">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+      <div class="conversation-tab-header">
+        <div class="header-left">
+          <div class="avatar-container">
+            <img class="avatar-img" 
+                 src="${imageUrl}" 
+                 alt="${conv.userName}"
+                 loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div class="avatar-fallback" style="display:none">${initial}</div>
+            ${isOnline ? '<div class="avatar-online-dot"></div>' : ""}
+          </div>
+          <div class="header-user-info">
+            <div class="header-user-name">${conv.userName}</div>
+            <div class="header-user-status ${isOnline ? "online" : ""}">
+              ${isOnline ? "Online" : `Last seen ${formatTime(conv.lastSeen)}`}
             </div>
-            <div class="tab-messages-container" id="messages-${conv.userId}">
-                <div class="empty-state">
-                    <i class="fas fa-comments"></i>
-                    <p>Loading conversation...</p>
-                </div>
-            </div>
-            <div class="tab-message-input-container">
-                <input type="text" class="tab-message-input" placeholder="Type a message..." 
-                       data-user-id="${conv.userId}">
-                <button class="tab-send-button" data-user-id="${conv.userId}">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        `;
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="header-btn meet-btn" data-user-id="${conv.userId}">
+            <i class="fas fa-phone"></i>
+            <span>Google Meet</span>
+          </button>
+          <button class="close-tab" data-user-id="${conv.userId}">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="tab-messages-container" id="messages-${conv.userId}">
+        <div class="empty-state">
+          <i class="fas fa-comments"></i>
+          <p>Loading conversation...</p>
+        </div>
+      </div>
+      <div class="tab-message-input-container">
+        <input type="text" class="tab-message-input" placeholder="Type a message..." 
+               data-user-id="${conv.userId}">
+        <button class="tab-send-button" data-user-id="${conv.userId}">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    `;
+
+    // Add error handler
+    const avatarImg = tab.querySelector(".avatar-img");
+    avatarImg.onerror = function () {
+      this.style.display = "none";
+      this.nextElementSibling.style.display = "flex";
+    };
 
     // Add close tab event
     tab.querySelector(".close-tab").addEventListener("click", (e) => {
@@ -434,7 +442,26 @@ async function fetchConversation(userId) {
       `http://localhost/chatty/backend/conversations.php?user_id=${userId}`
     );
     const data = await response.json();
-    return data.conversation ? data : null;
+
+    if (data && data.conversation) {
+      // Update participant info in openConversations
+      const convIndex = openConversations.findIndex((c) => c.userId == userId);
+      if (convIndex >= 0) {
+        const participant = data.participants.find(
+          (p) => p.id != currentUser.id
+        );
+        if (participant) {
+          openConversations[convIndex] = {
+            ...openConversations[convIndex],
+            userName: participant.name,
+            userStatus: participant.status,
+            lastSeen: participant.last_seen,
+            profilePicture: participant.profile_picture,
+          };
+        }
+      }
+    }
+    return data;
   } catch (error) {
     console.error("Error fetching conversation:", error);
     return null;
