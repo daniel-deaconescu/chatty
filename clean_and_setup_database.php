@@ -3,6 +3,22 @@ require_once 'backend/db.php';
 
 echo "Cleaning database and setting up fresh data...\n";
 
+// Check if read_status column exists in messages table
+echo "Checking database schema...\n";
+$result = $db->query("PRAGMA table_info(messages)");
+$columns = [];
+while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+    $columns[] = $row['name'];
+}
+
+if (!in_array('read_status', $columns)) {
+    echo "Adding read_status column to messages table...\n";
+    $db->exec("ALTER TABLE messages ADD COLUMN read_status INTEGER DEFAULT 0");
+    echo "✓ read_status column added\n";
+} else {
+    echo "✓ read_status column already exists\n";
+}
+
 // Disable foreign key constraints temporarily
 $db->exec('PRAGMA foreign_keys = OFF');
 

@@ -15,9 +15,9 @@ A modern, responsive chat application built with PHP, SQLite, and vanilla JavaSc
 
 ## Prerequisites
 
-- **XAMPP** (Apache + PHP)
+- **XAMPP** (includes Apache + PHP + MySQL)
 - **Web browser** (Chrome, Firefox, Safari, Edge)
-- **Git** (for cloning the repository)
+- **Git** (for cloning the repository) - _optional_
 
 ## Installation & Setup
 
@@ -33,6 +33,8 @@ cd chatty
 1. Open XAMPP Control Panel
 2. Start **Apache** service
 3. (Optional) Start **MySQL** service (not required for this project)
+
+**Note:** XAMPP includes PHP, so you can run `php` commands directly in any terminal.
 
 ### 3. Place Project in XAMPP Directory
 
@@ -70,7 +72,13 @@ Cleaning database and setting up fresh data...
 
 - You're in the correct directory (`C:\xampp\htdocs\chatty`)
 - XAMPP Apache is running
-- PHP is properly installed with XAMPP
+- XAMPP is properly installed (includes PHP)
+
+**If you get "php is not recognized as an internal or external command":**
+
+1. Make sure XAMPP is installed
+2. Try using the full path: `C:\xampp\php\php.exe clean_and_setup_database.php`
+3. Or add XAMPP's PHP to your system PATH
 
 ### 5. Access the Application
 
@@ -144,6 +152,49 @@ The application uses SQLite with the following tables:
 - Check browser console for JavaScript errors
 - Ensure all backend PHP files are present
 - Verify Apache is running and PHP is enabled
+
+#### 6. "php is not recognized as an internal or external command"
+
+- **Solution 1:** Use the full path: `C:\xampp\php\php.exe clean_and_setup_database.php`
+- **Solution 2:** Add XAMPP's PHP to your system PATH (permanent fix):
+
+  1. Press `Windows + R`, type `sysdm.cpl`, press Enter
+  2. Click "Environment Variables" button
+  3. Under "System Variables", find and select "Path", click "Edit"
+  4. Click "New" and add: `C:\xampp\php`
+  5. Click "OK" on all dialogs
+  6. **Restart your terminal/command prompt**
+  7. Try running `php --version` to verify it works
+
+  **Alternative method:** Right-click "This PC" → Properties → Advanced system settings → Environment Variables
+
+- **Solution 3:** Make sure XAMPP is properly installed
+
+#### 7. "PHP Fatal error: Uncaught error" or "SQLite3 not found"
+
+- **Solution 1:** Enable SQLite3 extension in XAMPP:
+  1. Open XAMPP Control Panel
+  2. Click "Config" button next to Apache
+  3. Select "php.ini"
+  4. Find the line: `;extension=sqlite3`
+  5. Remove the semicolon (;) so it becomes: `extension=sqlite3`
+  6. Save the file and restart Apache
+- **Solution 2:** Try the new setup script: `php setup_database.php`
+- **Solution 3:** Check if all files are present in the project directory
+- **Solution 4:** Make sure you're in the correct directory (`C:\xampp\htdocs\chatty`)
+- **Solution 5:** Check PHP version: `php --version` (should be 7.0 or higher)
+- **Solution 6:** Verify SQLite3 is enabled: `php -m | findstr sqlite`
+
+#### 8. "table messages has no column named read_status"
+
+- **Solution:** The setup scripts now automatically add the missing column. Try running:
+  ```bash
+  php setup_database.php
+  ```
+  or
+  ```bash
+  php clean_and_setup_database.php
+  ```
 
 ### Browser Console Errors
 
