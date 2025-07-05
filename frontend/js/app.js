@@ -106,11 +106,22 @@ function renderUserItem(user, containerId, isPinned) {
            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
       <div class="avatar-fallback" style="display:none">${initial}</div>
       ${user.status === "online" ? '<div class="avatar-online-dot"></div>' : ""}
+      ${
+        user.unread_count > 0
+          ? `<div class="notification-badge">${
+              user.unread_count > 99 ? "99+" : user.unread_count
+            }</div>`
+          : ""
+      }
     </div>
     <div class="user-info">
       <div class="user-name">${user.name}</div>
       <div class="user-preview">${user.last_message || "No messages yet"}</div>
-      <div class="user-time">${formatTime(user.last_seen)}</div>
+      <div class="user-time">${
+        user.last_message_time
+          ? formatTime(user.last_message_time)
+          : formatTime(user.last_seen)
+      }</div>
     </div>
     <div class="user-actions">
       <button class="btn-icon toggle-pin ${
@@ -191,6 +202,9 @@ async function openConversationTab(user) {
 
   // Fetch and display messages
   await fetchAndDisplayConversation(user.id);
+
+  // Clear notifications for this user
+  clearUserNotifications(user.id);
 }
 
 // Generate Google Meet link
@@ -566,11 +580,11 @@ function startPolling() {
 
 // Check for updates function that handles all open conversations
 async function checkForUpdates() {
-  if (openConversations.length > 0) {
-    try {
-      // Refresh users list for status updates
-      await fetchUsers();
+  try {
+    // Always refresh users list for status updates and notification counts
+    await fetchUsers();
 
+    if (openConversations.length > 0) {
       // Update conversation headers with latest user data
       updateConversationHeaders();
 
@@ -593,9 +607,9 @@ async function checkForUpdates() {
           }
         })
       );
-    } catch (error) {
-      console.error("Polling error:", error);
     }
+  } catch (error) {
+    console.error("Polling error:", error);
   }
 }
 
@@ -629,6 +643,24 @@ function updateConversationHeaders() {
       }
     }
   });
+}
+
+// Clear notifications for a specific user
+function clearUserNotifications(userId) {
+  // Remove notification badge from the user item
+  const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+  if (userItem) {
+    const notificationBadge = userItem.querySelector(".notification-badge");
+    if (notificationBadge) {
+      notificationBadge.remove();
+    }
+  }
+
+  // Update the user's unread count in allUsers array
+  const userIndex = allUsers.findIndex((user) => user.id == userId);
+  if (userIndex >= 0) {
+    allUsers[userIndex].unread_count = 0;
+  }
 }
 
 // Helper function to format time

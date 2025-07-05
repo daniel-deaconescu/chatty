@@ -1,0 +1,35 @@
+# Database files
+database/*.db
+database/*.db-shm
+database/*.db-wal
+database/*.sqbpro
+
+# PHP temporary files
+*.tmp
+*.temp
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+
+# Backup files
+*.bak
+*.backup
+
+# Cache files
+cache/
+*.cache 

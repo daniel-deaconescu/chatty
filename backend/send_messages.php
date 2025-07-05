@@ -12,8 +12,8 @@ if (!$conversation_id || !$sender_id || empty($content)) {
 
 try {
     $stmt = $db->prepare("
-        INSERT INTO messages (conversation_id, sender_id, content)
-        VALUES (:conversation_id, :sender_id, :content)
+        INSERT INTO messages (conversation_id, sender_id, content, read_status)
+        VALUES (:conversation_id, :sender_id, :content, 0)
     ");
     $stmt->bindValue(':conversation_id', $conversation_id, SQLITE3_INTEGER);
     $stmt->bindValue(':sender_id', $sender_id, SQLITE3_INTEGER);

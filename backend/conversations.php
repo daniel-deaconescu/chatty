@@ -68,6 +68,18 @@ try {
         $messages[] = $row;
     }
     
+    // Mark messages as read for the current user
+    $stmt = $db->prepare("
+        UPDATE messages 
+        SET read_status = 1 
+        WHERE conversation_id = :conversation_id 
+        AND sender_id != :current_user_id 
+        AND read_status = 0
+    ");
+    $stmt->bindValue(':conversation_id', $conversation['id'], SQLITE3_INTEGER);
+    $stmt->bindValue(':current_user_id', $current_user_id, SQLITE3_INTEGER);
+    $stmt->execute();
+    
     // Get participant info (excluding current user)
     $stmt = $db->prepare("
         SELECT u.id, u.name, u.status, u.last_seen, u.profile_picture

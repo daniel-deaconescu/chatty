@@ -166,6 +166,33 @@ body {
   z-index: 2;
 }
 
+/* Notification Badge */
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  background-color: var(--unread-badge);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 2px solid var(--white);
+  z-index: 10;
+  padding: 0 4px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.notification-badge:empty {
+  min-width: 18px;
+  width: 18px;
+}
+
 /* User Info */
 .user-info {
   flex: 1;
@@ -236,7 +263,9 @@ body {
   border-right: 1px solid var(--medium-gray);
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 .conversation-tab.single-tab {
@@ -275,6 +304,7 @@ body {
   width: 40px;
   height: 40px;
   min-width: 40px;
+  overflow: hidden;
 }
 
 .conversation-tab-header .avatar-online-dot {
@@ -338,6 +368,7 @@ body {
   background-color: #f5f7fb;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 .messages-wrapper {
@@ -399,6 +430,8 @@ body {
   border-top: 1px solid var(--medium-gray);
   display: flex;
   gap: 8px;
+  background-color: var(--white);
+  flex-shrink: 0;
 }
 
 .tab-message-input {
